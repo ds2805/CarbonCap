@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<h2>Admin Dashboard</h2>
+<!-- Kavya: build the real admin UI here. Data is already available: -->
+
+<h3>Users</h3>
+<ul>
+  {% for u in users %}
+    <li>#{{ u.id }} — {{ u.username }} ({{ u.role }})</li>
+  {% endfor %}
+</ul>
+
+<h3>Recent Transactions</h3>
+<ul>
+  {% for t in transactions %}
+    <li>Tx #{{ t.id }} — status: {{ t.status }} — hash: {{ t.hash }}</li>
+  {% else %}
+    <li>No transactions yet.</li>
+  {% endfor %}
+</ul>
+
+<h3>Audit Log</h3>
+<ul>
+  {% for e in audit_log %}
+    <li>[{{ e.timestamp }}] {{ e.event_type }} — actor {{ e.actor_id }} — {{ e.details }}</li>
+  {% else %}
+    <li>No audit events yet.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

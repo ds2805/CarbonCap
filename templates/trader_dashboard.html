@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Trader Dashboard{% endblock %}
+{% block content %}
+<h2>Trader Dashboard</h2>
+<!-- Kavya: build the real buy/sell/transfer UI here. Data is already available: -->
+
+<h3>My Credits</h3>
+<ul>
+  {% for c in credits %}
+    <li>Credit #{{ c.id }} — signed: {{ c.signed }} — origin: {{ c.origin }}</li>
+  {% else %}
+    <li>No credits yet.</li>
+  {% endfor %}
+</ul>
+
+<h3>My Transactions</h3>
+<ul>
+  {% for t in transactions %}
+    <li>Tx #{{ t.id }} — status: {{ t.status }} — credit: {{ t.credit_id }}</li>
+  {% else %}
+    <li>No transactions yet.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

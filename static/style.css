@@ -1,0 +1,30 @@
+/* Kavya: replace with real styling. This is just a bare-bones placeholder
+   so the templates aren't completely unstyled. */
+
+body {
+    font-family: system-ui, sans-serif;
+    margin: 2rem;
+    color: #1a1a1a;
+}
+
+header {
+    border-bottom: 2px solid #2e7d32;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.flashes {
+    background: #fff3cd;
+    padding: 0.75rem 1rem;
+    border-radius: 4px;
+    list-style: none;
+}
+
+button {
+    background: #2e7d32;
+    color: white;
+    border: none;
+    padding: 0.4rem 0.9rem;
+    border-radius: 4px;
+    cursor: pointer;
+}

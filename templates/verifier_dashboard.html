@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Verifier Dashboard{% endblock %}
+{% block content %}
+<h2>Verifier Dashboard</h2>
+<!-- Kavya: build the real review/sign UI here. Data is already available: -->
+
+<h3>Unsigned Credits</h3>
+<ul>
+  {% for c in unsigned %}
+    <li>
+      Credit #{{ c.id }} — origin: {{ c.origin }} — owner: {{ c.owner_id }}
+      <form method="POST" action="{{ url_for('verifier.sign_existing_credit', credit_id=c.id) }}" style="display:inline">
+        <button type="submit">Sign</button>
+      </form>
+    </li>
+  {% else %}
+    <li>No unsigned credits.</li>
+  {% endfor %}
+</ul>
+
+<h3>Signed Credits</h3>
+<ul>
+  {% for c in signed %}
+    <li>Credit #{{ c.id }} — origin: {{ c.origin }}</li>
+  {% else %}
+    <li>No signed credits yet.</li>
+  {% endfor %}
+</ul>
+{% endblock %}
