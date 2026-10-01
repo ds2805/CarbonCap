@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Register · CarbonCap</title>
+<link rel="stylesheet" href="../static/style.css">
+</head>
+<body class="auth">
+<aside class="auth-side">
+  <div class="brand">CarbonCap</div>
+  <div>
+    <h1>Every credit signed. Every trade chained.</h1>
+    <p>Trade verified carbon credits on a ledger where tampering shows up.</p>
+    <div class="chain" aria-hidden="true">
+      <div>tx 1 <span>prev</span> 0000 <span>hash</span> a91f…3c</div>
+      <div>tx 2 <span>prev</span> a91f <span>hash</span> 4be7…d0</div>
+      <div>tx 3 <span>prev</span> 4be7 <span>hash</span> 77c2…19</div>
+    </div>
+  </div>
+  <p>Trader · Verifier · Admin</p>
+</aside>
+<main class="auth-main">
+  <form method="post" class="auth-form">
+    <h2>Create account</h2>
+    <p class="sub">Pick the role you will work in.</p>
+    
+    <label for="username">Username</label>
+    <input id="username" name="username" type="text" autocomplete="username" required autofocus>
+    <label for="password">Password</label>
+    <input id="password" name="password" type="password" autocomplete="new-password" required>
+    <label for="role">Role</label>
+    <select id="role" name="role" required>
+      <option value="trader">Trader</option>
+      <option value="verifier">Verifier</option>
+      <option value="admin">Admin</option>
+    </select>
+    <button type="submit">Create account</button>
+    <p class="switch">Already registered? <a href="/login">Sign in</a></p>
+  </form>
+</main>
+</body>
+</html>
