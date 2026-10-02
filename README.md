@@ -83,7 +83,7 @@ Swap the stub bodies out for the real logic; the routes don't need to change.
 - [x] Stub routes for `/credits/new` and `/transactions/new`, fully wired
       end-to-end with stub engines so Kavya can build dashboards against
       real endpoints right now
-- [ ] Mariya: replace `verifier_engine.py` and `fraud_engine.py` stubs
+- [x] Mariya: replace `verifier_engine.py` and `fraud_engine.py` stubs
 - [ ] Swathy: replace `ml_engine.py` stub with trained Isolation Forest
 - [ ] Kavya: style `templates/` and `static/`
 
