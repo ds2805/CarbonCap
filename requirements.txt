@@ -2,8 +2,10 @@ Flask==3.0.3
 Flask-SQLAlchemy==3.1.1
 Werkzeug==3.0.3
 python-dotenv==1.0.1
+flask-cors==6.0.5
 
 # Add these once Mariya's/Swathy's modules land — not needed for the skeleton yet:
-# scikit-learn   # Isolation Forest (Swathy - ML anomaly detection)
-# pandas         # data prep for ML training (Swathy)
-# numpy          # data prep for ML training (Swathy)
+scikit-learn   # Isolation Forest (Swathy - ML anomaly detection)
+joblib         # Model serialization (Swathy - ML anomaly detection)
+pandas         # data prep for ML training (Swathy)
+numpy          # data prep for ML training (Swathy)

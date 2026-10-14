@@ -4,6 +4,11 @@ __pycache__/
 venv/
 env/
 .env
-instance/*.db
+instance/
 .DS_Store
 *.egg-info/
+*.pkl
+*.csv
+node_modules/
+.expo/
+.expo-shared/

@@ -109,3 +109,48 @@ def new_transaction():
     log_event("tx_success", sender.id, f"Transaction {transaction.id} completed successfully")
 
     return jsonify({"status": "valid", "transaction_id": transaction.id, "hash": transaction.hash})
+
+
+@trader_bp.route("/api/credits")
+@require_role("Trader")
+def api_credits():
+    """JSON API for mobile app - get trader's credits"""
+    user = current_user()
+    credits = Credit.query.filter_by(owner_id=user.id).all()
+    return jsonify([
+        {
+            "id": c.id,
+            "owner_id": c.owner_id,
+            "origin": c.origin,
+            "signed": c.signed,
+            "signature": c.signature,
+        }
+        for c in credits
+    ])
+
+
+@trader_bp.route("/api/transactions")
+@require_role("Trader")
+def api_transactions():
+    """JSON API for mobile app - get trader's transactions"""
+    user = current_user()
+    transactions = (
+        Transaction.query.filter(
+            (Transaction.sender_id == user.id) | (Transaction.receiver_id == user.id)
+        )
+        .order_by(Transaction.timestamp.desc())
+        .all()
+    )
+    return jsonify([
+        {
+            "id": t.id,
+            "credit_id": t.credit_id,
+            "sender_id": t.sender_id,
+            "receiver_id": t.receiver_id,
+            "status": t.status,
+            "timestamp": t.timestamp.isoformat() if t.timestamp else None,
+            "hash": t.hash,
+            "anomaly_score": t.anomaly_score,
+        }
+        for t in transactions
+    ])

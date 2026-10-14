@@ -28,3 +28,237 @@ button {
     border-radius: 4px;
     cursor: pointer;
 }
+
+/* Auth pages styling */
+body.auth {
+    margin: 0;
+    display: flex;
+    min-height: 100vh;
+}
+
+.auth-side {
+    flex: 1;
+    background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
+    color: white;
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.auth-side .brand {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+}
+
+.auth-side h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.auth-side .chain {
+    font-family: monospace;
+    font-size: 0.9rem;
+    opacity: 0.8;
+    margin-top: 2rem;
+}
+
+.auth-side .chain div {
+    margin: 0.5rem 0;
+}
+
+.auth-side .chain span {
+    color: #a5d6a7;
+}
+
+.auth-main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+}
+
+.auth-form {
+    max-width: 400px;
+    width: 100%;
+}
+
+.auth-form h2 {
+    margin-bottom: 0.5rem;
+}
+
+.auth-form .sub {
+    color: #666;
+    margin-bottom: 2rem;
+}
+
+.auth-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.auth-form input {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.auth-form button {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+}
+
+.auth-form .switch {
+    text-align: center;
+    margin-top: 1.5rem;
+}
+
+.auth-form .switch a {
+    color: #2e7d32;
+    text-decoration: none;
+}
+
+/* Dashboard styling */
+.topbar {
+    background: #2e7d32;
+    color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.topbar .brand {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.topbar .role {
+    background: rgba(255,255,255,0.2);
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+}
+
+.topbar a {
+    color: white;
+    text-decoration: none;
+}
+
+.wrap {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.summary {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.summary div {
+    background: #f5f5f5;
+    padding: 1.5rem;
+    border-radius: 8px;
+    text-align: center;
+    flex: 1;
+}
+
+.summary div b {
+    display: block;
+    font-size: 2rem;
+    color: #2e7d32;
+}
+
+.summary div span {
+    color: #666;
+}
+
+.panel {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.panel h2 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+.scroll {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background: #f5f5f5;
+}
+
+th, td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+.badge.signed {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.badge.unsigned {
+    background: #fff3e0;
+    color: #e65100;
+}
+
+.badge.ok {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.badge.flagged {
+    background: #ffebee;
+    color: #c62828;
+}
+
+.inline form {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-end;
+}
+
+.inline form div {
+    flex: 1;
+}
+
+.inline form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.inline form input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}

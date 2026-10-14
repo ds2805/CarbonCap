@@ -82,3 +82,32 @@ def sign_existing_credit(credit_id):
         db.session.commit()
         log_event("credit_blocked", verifier.id, f"Credit {credit.id} blocked: {reason}")
         return jsonify({"status": "blocked", "credit_id": credit.id, "reason": reason}), 403
+
+
+@verifier_bp.route("/api/credits")
+@require_role("Verifier")
+def api_credits():
+    """JSON API for mobile app - get unsigned and signed credits"""
+    unsigned = Credit.query.filter_by(signed=False).all()
+    signed = Credit.query.filter_by(signed=True).all()
+    return jsonify({
+        "unsigned": [
+            {
+                "id": c.id,
+                "owner_id": c.owner_id,
+                "origin": c.origin,
+                "signed": c.signed,
+            }
+            for c in unsigned
+        ],
+        "signed": [
+            {
+                "id": c.id,
+                "owner_id": c.owner_id,
+                "origin": c.origin,
+                "signed": c.signed,
+                "signature": c.signature,
+            }
+            for c in signed
+        ]
+    })

@@ -13,7 +13,7 @@ Usage in a route file:
 """
 
 from functools import wraps
-from flask import Blueprint, request, session, redirect, url_for, render_template, flash, abort
+from flask import Blueprint, request, session, redirect, url_for, render_template, flash, abort, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from models import db, User, ROLES, log_event
@@ -67,15 +67,21 @@ def require_role(*allowed_roles):
 @auth_bp.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-        username = request.form.get("username", "").strip()
-        password = request.form.get("password", "")
-        role = request.form.get("role", "")
+        # Support both form data and JSON for mobile app
+        payload = request.get_json(silent=True) or {}
+        username = request.form.get("username", "").strip() or payload.get("username", "").strip()
+        password = request.form.get("password", "") or payload.get("password", "")
+        role = request.form.get("role", "") or payload.get("role", "")
 
         if not username or not password or role not in ROLES:
+            if payload:
+                return jsonify({"error": "All fields are required and role must be valid"}), 400
             flash("All fields are required and role must be valid.")
             return redirect(url_for("auth.register"))
 
         if User.query.filter_by(username=username).first():
+            if payload:
+                return jsonify({"error": "Username already taken"}), 400
             flash("Username already taken.")
             return redirect(url_for("auth.register"))
 
@@ -88,6 +94,9 @@ def register():
         db.session.commit()
         log_event("register", user.id, f"New {role} account created")
 
+        if payload:
+            return jsonify({"success": True, "id": user.id, "username": user.username, "role": user.role})
+
         flash("Account created. Please log in.")
         return redirect(url_for("auth.login"))
 
@@ -97,17 +106,29 @@ def register():
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        username = request.form.get("username", "").strip()
-        password = request.form.get("password", "")
+        # Support both form data and JSON for mobile app
+        payload = request.get_json(silent=True) or {}
+        username = request.form.get("username", "").strip() or payload.get("username", "").strip()
+        password = request.form.get("password", "") or payload.get("password", "")
 
         user = User.query.filter_by(username=username).first()
         if user is None or not check_password_hash(user.password_hash, password):
+            if payload:  # JSON request from mobile app
+                return jsonify({"error": "Invalid username or password"}), 401
             flash("Invalid username or password.")
             log_event("login_failed", None, f"Failed login attempt for '{username}'")
             return redirect(url_for("auth.login"))
 
         login_user(user)
         log_event("login", user.id, "Successful login")
+
+        # Return JSON for mobile app, redirect for web
+        if payload:
+            return jsonify({
+                "id": user.id,
+                "username": user.username,
+                "role": user.role,
+            })
 
         # Send each role to its own dashboard
         if user.role == "Trader":
@@ -127,3 +148,26 @@ def logout():
         log_event("logout", user.id, "User logged out")
     logout_user()
     return redirect(url_for("auth.login"))
+
+
+@auth_bp.route("/api/me")
+def api_me():
+    """JSON API for mobile app - get current user info"""
+    user = current_user()
+    if user is None:
+        return jsonify({"error": "Not logged in"}), 401
+    return jsonify({
+        "id": user.id,
+        "username": user.username,
+        "role": user.role,
+    })
+
+
+@auth_bp.route("/api/users")
+def api_users():
+    """JSON API for mobile app - get all users (for buyer lookup)"""
+    user = current_user()
+    if user is None:
+        return jsonify({"error": "Not logged in"}), 401
+    users = User.query.all()
+    return jsonify([{"id": u.id, "username": u.username, "role": u.role} for u in users])

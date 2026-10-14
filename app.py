@@ -10,6 +10,7 @@ pipeline in routes/trader.py.
 """
 
 from flask import Flask, redirect, url_for
+from flask_cors import CORS
 
 from config import Config
 from models import db
@@ -23,6 +24,9 @@ from routes.admin import admin_bp
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
+
+    # Enable CORS for mobile app
+    CORS(app, resources={r"/*": {"origins": "*"}})
 
     db.init_app(app)
 
@@ -44,4 +48,4 @@ def create_app():
 app = create_app()
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0", port=5001)
