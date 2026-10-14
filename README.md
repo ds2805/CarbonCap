@@ -8,6 +8,30 @@ A secure carbon credit trading platform with multi-layered fraud protection:
 - Role-based access control (Trader, Verifier, Admin)
 - Complete audit trail
 
+## Project Status
+
+**Backend: ✅ COMPLETE**
+- All fraud detection engines implemented and working
+- All API endpoints functional
+- Database models complete
+- Authentication and authorization working
+- Mobile-ready (runs on 0.0.0.0 for phone access)
+
+**Frontend: ⚠️ NEEDS WORK**
+- Web UI: Basic HTML templates exist but need styling and UX improvements
+- Mobile App: Basic screens exist but need better UI, animations, and step-by-step workflows
+- The core functionality works, but the user experience needs to be polished
+
+**What's Missing:**
+- Step-by-step visualization of verification process (showing each check)
+- Step-by-step visualization of transaction process (showing fraud checks)
+- Better credit/buyer selection (dropdowns instead of ID/username inputs)
+- Animations and loading states
+- Better error handling and success states
+- Professional UI design
+
+**See "Frontend Development Guide" section below for detailed requirements.**
+
 ## Quick Start
 
 ### Backend (Flask)
@@ -125,17 +149,330 @@ Calculates anomaly score using trained Isolation Forest model.
 - [x] Audit logging system
 
 ### ⚠️ Partially Complete (Frontend)
-- [x] Basic web templates (functional but minimal styling)
-- [x] Mobile app screens (basic implementation)
-- [ ] Improved UI/UX for web dashboards
-- [ ] Enhanced mobile app UI and error handling
-- [ ] Real-time updates in mobile app
+
+**Web UI:**
+- [x] Basic HTML templates (functional but minimal styling)
+- [ ] Enhanced UI with animations and step-by-step workflows
+- [ ] Better visual feedback for verification and transaction processes
+- [ ] Responsive design improvements
+
+**Mobile App:**
+- [x] Basic screens for all roles (login, dashboards)
+- [ ] Enhanced UI with animations and progress indicators
+- [ ] Step-by-step verification process visualization
+- [ ] Step-by-step transaction process visualization
+- [ ] Better credit selection (dropdown instead of ID input)
+- [ ] Better buyer selection (dropdown with usernames)
+- [ ] Loading states and error handling improvements
 
 ### 📝 Known Limitations
 - Web UI has minimal styling - functional but needs improvement
 - Mobile app has basic screens but could use better UX
 - No real-time notifications for transaction updates
 - ML model uses synthetic training data - would benefit from real dataset
+
+---
+
+## Frontend Development Guide
+
+This section is for developers working on the frontend (web UI and mobile app). The backend is complete and fully functional. Your job is to create a polished, user-friendly interface that clearly shows how the system works.
+
+### Understanding the System Workflows
+
+Before building the UI, you need to understand the two main workflows:
+
+#### **Workflow 1: Credit Verification (Verifier)**
+
+**What happens in the backend:**
+1. Verifier receives a credit with an "origin" field (format: "Registry:ProjectID")
+2. System checks if the origin matches the expected format
+3. System checks if the registry is in the allowed list (Verra, Gold Standard, etc.)
+4. System checks if this origin was already used for another signed credit (prevents duplicates)
+5. If all checks pass, system generates an HMAC-SHA256 signature
+6. Signature is calculated from: credit ID + origin + timestamp + secret key
+7. Credit is marked as "signed" and the signature is stored
+
+**What the UI should show:**
+- **Step 1**: Display the credit details (ID, Origin, Owner)
+- **Step 2**: Show verification checks with animated checkboxes:
+  - ✓ Format check (matches "Registry:ProjectID" pattern)
+  - ✓ Registry check (is it a recognized registry?)
+  - ✓ Duplicate check (has this origin been used before?)
+- **Step 3**: Show signature generation animation
+- **Step 4**: Display success with the signature hash
+- **Error handling**: If any check fails, show which check failed and why
+
+**Mobile app screens needed:**
+- Credit details card
+- Animated verification checklist
+- Success/failure states with clear messaging
+
+#### **Workflow 2: Credit Transaction (Trader)**
+
+**What happens in the backend:**
+1. Trader submits a transaction (credit ID, receiver ID)
+2. **Fraud Check 1 - Ownership**: Does the sender actually own this credit?
+3. **Fraud Check 2 - Double-spend**: Has this credit already been sold in a valid transaction?
+4. **Fraud Check 3 - Replay attack**: Has this exact transaction been processed before?
+5. **ML Anomaly Check**: Calculate anomaly score using Isolation Forest
+6. If ML score ≥ threshold (0.6), flag as suspicious
+7. If all checks pass, generate hash chain:
+   - Get previous transaction's hash
+   - Calculate new hash: transaction data + previous hash
+8. Transfer credit ownership
+9. Save transaction with status "valid" or "flagged"
+
+**What the UI should show:**
+- **Step 1**: Credit selection (dropdown showing available credits with details)
+- **Step 2**: Buyer selection (dropdown showing other traders)
+- **Step 3**: Show transaction submission
+- **Step 4**: Animated fraud detection checks:
+  - ✓ Ownership check
+  - ✓ Double-spend check
+  - ✓ Replay attack check
+  - ✓ ML anomaly detection (show the score)
+- **Step 5**: Hash chain generation animation
+- **Step 6**: Success with transaction details and hash
+- **Error handling**: If blocked, show which check failed and the reason
+
+**Mobile app screens needed:**
+- Credit selection dropdown (not ID input)
+- Buyer selection dropdown (not username input)
+- Animated fraud detection checklist
+- ML anomaly score visualization (gauge or progress bar)
+- Transaction success/failure states
+
+---
+
+### Frontend Requirements
+
+#### **Web UI (templates/)**
+
+**Files to work on:**
+- `templates/login.html` - Login page
+- `templates/register.html` - Registration page
+- `templates/trader_dashboard.html` - Trader dashboard
+- `templates/verifier_dashboard.html` - Verifier dashboard
+- `templates/admin_dashboard.html` - Admin dashboard
+- `templates/base.html` - Base template with navigation
+- `static/style.css` - All styling
+
+**Requirements:**
+1. **Modern, clean design** with a professional look
+2. **Responsive** - works on desktop and mobile browsers
+3. **Animated progress indicators** for verification and transaction workflows
+4. **Clear error messages** when operations fail
+5. **Success states** with confetti or checkmark animations
+6. **Credit cards** showing origin, signature status, owner
+7. **Transaction cards** showing all details with hash preview
+8. **Audit log table** with readable timestamps and details
+
+#### **Mobile App (CarbonCapMobile/)**
+
+**Files to work on:**
+- `src/app/login.tsx` - Login screen
+- `src/app/register.tsx` - Registration screen
+- `src/app/trader-dashboard.tsx` - Trader dashboard
+- `src/app/verifier-dashboard.tsx` - Verifier dashboard
+- `src/app/admin-dashboard.tsx` - Admin dashboard
+- `src/components/` - Create reusable components
+
+**Requirements:**
+1. **Credit Selection Component**:
+   - Dropdown picker showing available credits
+   - Each credit shows: ID, Origin, Signed status
+   - Filter by signed/unsigned
+
+2. **User Selection Component**:
+   - Dropdown picker showing other users
+   - Show username and role
+   - Filter by role (e.g., only show Traders)
+
+3. **Verification Checklist Component**:
+   - Animated checkboxes for each check
+   - Checkboxes turn green as checks pass
+   - Show check name and brief description
+   - Error state if check fails
+
+4. **Fraud Detection Checklist Component**:
+   - Animated checkboxes for fraud checks
+   - ML anomaly score gauge (0-1 scale)
+   - Color-coded: green (safe), yellow (suspicious), red (blocked)
+   - Show threshold line on gauge
+
+5. **Hash Chain Visualization**:
+   - Animated chain showing previous hash → new hash
+   - Visual representation of tamper evidence
+   - Click to see full hash
+
+6. **Loading States**:
+   - Skeleton screens while data loads
+   - Progress spinners for operations
+   - Clear error messages if API fails
+
+7. **Success States**:
+   - Confetti animation on successful operations
+   - Transaction details card with hash
+   - Clear "operation completed" message
+
+---
+
+### API Integration Notes
+
+The mobile app already has API integration in `src/services/api.ts`. All you need to do is:
+
+1. Call the API functions at the right time
+2. Show loading states while waiting for response
+3. Display success/error states based on response
+4. Update local state after successful operations
+
+**Key API functions:**
+- `api.login(username, password)` - Returns user object
+- `api.register(username, password, role)` - Creates account
+- `api.getAllUsers()` - Returns list of users (for buyer selection)
+- `api.getTraderCredits()` - Returns trader's credits
+- `api.getTraderTransactions()` - Returns trader's transactions
+- `api.submitTransaction(creditId, receiverId)` - Submits transaction
+- `api.getVerifierCredits()` - Returns unsigned/signed credits
+- `api.signCredit(creditId)` - Signs a credit
+- `api.getAdminUsers()` - Returns all users
+- `api.getAdminTransactions()` - Returns all transactions
+- `api.getAuditLog()` - Returns audit log
+
+---
+
+### Design System Recommendations
+
+**Color Palette:**
+- Primary: #2e7d32 (green - carbon/eco theme)
+- Success: #4caf50
+- Warning: #ff9800
+- Error: #f44336
+- Background: #f5f5f5
+- Card background: #ffffff
+- Text: #333333
+
+**Typography:**
+- Headings: Bold, 24-32px
+- Body: Regular, 14-16px
+- Monospace for hashes: Courier or monospace font
+
+**Spacing:**
+- Padding: 16px (cards), 8px (tight)
+- Margin: 16px between sections
+- Border radius: 8-12px
+
+**Animations:**
+- Fade in: 300ms
+- Slide up: 300ms
+- Checkmark animation: 500ms
+- Confetti: 1000ms
+
+---
+
+### Testing Checklist
+
+Before considering the frontend complete:
+
+**Trader Dashboard:**
+- [ ] Can view owned credits in a nice card layout
+- [ ] Can select a credit from dropdown (not ID input)
+- [ ] Can select a buyer from dropdown (not username input)
+- [ ] Can submit transaction and see animated fraud checks
+- [ ] Can see ML anomaly score visualization
+- [ ] Can see transaction history with hashes
+- [ ] Error states show clear messages
+
+**Verifier Dashboard:**
+- [ ] Can view unsigned credits in a nice card layout
+- [ ] Can click "Sign" and see animated verification checks
+- [ ] Can see signature generation animation
+- [ ] Can view signed credits with signature preview
+- [ ] Error states show which check failed
+
+**Admin Dashboard:**
+- [ ] Can view all users in a nice table
+- [ ] Can view all transactions with hashes
+- [ ] Can view audit log with readable timestamps
+- [ ] Can see hash chain integrity status
+- [ ] Can see flagged transactions highlighted
+
+**General:**
+- [ ] All screens have loading states
+- [ ] All screens have error handling
+- [ ] App looks professional and polished
+- [ ] Animations are smooth and not distracting
+- [ ] Text is readable on all screen sizes
+
+---
+
+## Quick Start for Frontend Developers
+
+If you're starting fresh and only working on the frontend:
+
+### Step 1: Set up the backend
+```bash
+cd CarbonCap
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python app.py
+```
+Keep this running in one terminal.
+
+### Step 2: Test the current state
+- Open http://127.0.0.1:5001 in your browser
+- Register accounts or use demo credentials
+- See what the current UI looks like
+- Try the workflows to understand what needs improvement
+
+### Step 3: Start working on mobile app
+```bash
+cd CarbonCapMobile
+npm install
+npx expo start
+```
+- Scan QR code with Expo Go
+- Test all screens
+- Start improving the UI
+
+### Step 4: Read the backend code
+To understand what the UI should show:
+- Read `verifier_engine.py` - understand what checks are done
+- Read `fraud_engine.py` - understand fraud detection logic
+- Read `ml_engine.py` - understand ML anomaly scoring
+- Read `hash_chain.py` - understand hash chaining
+
+### Step 5: Build the UI
+Follow the "Frontend Development Guide" section above for detailed requirements.
+
+---
+
+## For the Next Developer
+
+**Your task:** Improve the frontend (web UI and mobile app) to make it professional, user-friendly, and clearly show how the system works.
+
+**What's already done:**
+- ✅ Backend is complete and working
+- ✅ All fraud detection engines are implemented
+- ✅ API endpoints are functional
+- ✅ Basic mobile app screens exist
+- ✅ Basic web templates exist
+
+**What you need to do:**
+1. Read the "Frontend Development Guide" section above
+2. Understand the two main workflows (verification and transaction)
+3. Design and implement step-by-step visualizations
+4. Add animations and loading states
+5. Improve user input (dropdowns instead of text inputs)
+6. Add error handling and success states
+7. Make it look professional
+
+**Important:** Don't change the backend or API contracts. The backend is complete and working. Only modify the frontend files:
+- Web: `templates/` and `static/`
+- Mobile: `CarbonCapMobile/src/`
+
+**Testing:** Use the demo data setup script in the README to quickly set up test accounts and credits.
 
 ## API Reference
 
