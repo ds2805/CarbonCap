@@ -1,0 +1,29 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "1. Run Flask Backend",
+      "type": "shell",
+      "command": "${workspaceFolder}\\venv\\Scripts\\python.exe app.py",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "servers"
+      },
+      "isBackground": true
+    },
+    {
+      "label": "2. Run Expo Mobile App",
+      "type": "shell",
+      "command": "cd CarbonCapMobile; npx expo start",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "servers"
+      },
+      "isBackground": true
+    }
+  ]
+}
