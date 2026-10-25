@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/
+.env
+instance/
+.DS_Store
+*.egg-info/
+*.pkl
+*.csv
+node_modules/
+.expo/
+.expo-shared/

@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}Sign In — CarbonCap Fraud-Resistant Carbon Ledger{% endblock %}
+{% block body_class %}auth{% endblock %}
+
+{% block raw_content %}
+<div class="auth-wrapper">
+    <!-- Left Hero Pane -->
+    <div class="auth-hero-pane">
+        <div class="hero-brand">
+            <div class="hero-brand-logo">🌿</div>
+            <div>Carbon<span>Cap</span></div>
+        </div>
+
+        <div class="hero-main">
+            <h1>Every credit signed.<br><span>Every trade chained.</span></h1>
+            <p>A next-generation carbon credit trading platform protected by multi-layered fraud engines, real-time ML anomaly detection, and a cryptographic tamper-evident ledger.</p>
+
+            <div class="feature-cards-grid">
+                <div class="feature-mini-card">
+                    <h4>🔐 HMAC Signature</h4>
+                    <p>Cryptographic origin proof prevents counterfeit or unverified credits from entering the market.</p>
+                </div>
+                <div class="feature-mini-card">
+                    <h4>🧠 ML Anomaly Detection</h4>
+                    <p>Isolation Forest engine detects abnormal trading velocity and unusual transfer patterns.</p>
+                </div>
+                <div class="feature-mini-card">
+                    <h4>🚫 Double-Spend Shield</h4>
+                    <p>Instant rule-based detection blocks double-spends, replay attacks, and unauthorized transfers.</p>
+                </div>
+                <div class="feature-mini-card">
+                    <h4>⛓️ SHA-256 Hash Chain</h4>
+                    <p>Every transaction is cryptographically linked to the prior block for mathematical auditability.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-footer-chain">
+            <div><span>genesis</span> 00000000000000000000...</div>
+            <div style="color:#22c55e;">➔</div>
+            <div><span>block #1</span> a91f7d...4e3c</div>
+            <div style="color:#22c55e;">➔</div>
+            <div><span>head</span> 4be78a...89d0</div>
+        </div>
+    </div>
+
+    <!-- Right Form Pane -->
+    <div class="auth-form-pane">
+        <div class="auth-form-card">
+            <h2>Sign in to CarbonCap</h2>
+            <p class="auth-subtitle">Select a demo role or enter your credentials to access your dashboard.</p>
+
+            <!-- Quick-Fill Demo Accounts -->
+            <div class="demo-accounts-bar">
+                <div class="demo-bar-title">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" y1="8" x2="19" y2="14"></line><line x1="22" y1="11" x2="16" y2="11"></line></svg>
+                    <span>Quick Demo Sign-In (Click to populate)</span>
+                </div>
+                <div class="demo-buttons-group">
+                    <button type="button" class="btn-demo-fill" onclick="fillDemo('trader1', 'password123')">
+                        ⚖️ trader1 (Trader)
+                    </button>
+                    <button type="button" class="btn-demo-fill" onclick="fillDemo('trader2', 'password123')">
+                        ⚖️ trader2 (Trader)
+                    </button>
+                    <button type="button" class="btn-demo-fill" onclick="fillDemo('verifier1', 'password123')">
+                        🔐 verifier1 (Verifier)
+                    </button>
+                    <button type="button" class="btn-demo-fill" onclick="fillDemo('admin1', 'password123')">
+                        🛡️ admin1 (Admin)
+                    </button>
+                </div>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                <div class="flash-container">
+                  {% for category, message in messages %}
+                    <div class="flash-message {% if category in ['error', 'danger'] %}error{% elif category == 'success' %}success{% else %}info{% endif %}">
+                      <span>{{ message }}</span>
+                    </div>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('auth.login') }}" id="loginForm">
+                <div class="form-group">
+                    <label for="usernameInput">Username</label>
+                    <input type="text" id="usernameInput" name="username" class="form-control" placeholder="e.g. trader1" required autofocus>
+                </div>
+
+                <div class="form-group">
+                    <label for="passwordInput">Password</label>
+                    <input type="password" id="passwordInput" name="password" class="form-control" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;" id="loginBtn">
+                    <span>Sign In</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </button>
+            </form>
+
+            <div style="margin-top: 2rem; text-align: center; font-size: 0.9rem; color: var(--text-muted);">
+                Don't have an account? <a href="{{ url_for('auth.register') }}" style="color: var(--primary); font-weight: 600; text-decoration: none;">Create an account</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function fillDemo(username, password) {
+    document.getElementById('usernameInput').value = username;
+    document.getElementById('passwordInput').value = password;
+    showToast(`Loaded ${username} credentials! Click 'Sign In' to proceed.`, 'info');
+}
+
+document.getElementById('loginForm').addEventListener('submit', () => {
+    const btn = document.getElementById('loginBtn');
+    btn.disabled = true;
+    btn.innerHTML = `<span class="spinner"></span> <span>Authenticating...</span>`;
+});
+</script>
+{% endblock %}
